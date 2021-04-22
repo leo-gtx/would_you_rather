@@ -20,8 +20,12 @@ import LeaderboardIcon from '@material-ui/icons/Equalizer';
 import NewQuestionIcon from '@material-ui/icons/PostAdd';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { Avatar } from '@material-ui/core';
+import {connect} from 'react-redux';
 //Imported Components
-import New from './New'
+//import New from './New'
+import Question from './Question'
+import Score from './Score'
+import Home from './Home'
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -86,7 +90,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function MiniDrawer() {
+function Dashboard(props) {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -98,7 +102,8 @@ export default function MiniDrawer() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
+  const {authedUser, users} = props
+  console.log(users[authedUser].avatarURL)
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -147,10 +152,10 @@ export default function MiniDrawer() {
         <Divider />
         <ListItem>
             <ListItemIcon>
-                <Avatar /> 
+                <Avatar alt={authedUser} src="../images/tyler.png" /> 
             </ListItemIcon>
            
-           <ListItemText primary='Username'/>
+           <ListItemText primary={authedUser}/>
         </ListItem>
         
         
@@ -177,8 +182,15 @@ export default function MiniDrawer() {
       </Drawer>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-        <New/>
+        <Home/>
       </main>
     </div>
   );
 }
+function mapPropsToState({authedUser, users}){
+  return{
+    authedUser,
+    users
+  }
+}
+export default connect(mapPropsToState)(Dashboard)

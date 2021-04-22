@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {
-    Container,
+    Grid,
     Paper,
     Divider,
     TextField,
@@ -10,23 +10,22 @@ import {
 class New extends Component{
     render(){
         return(
-            <Container>
-                <Paper elevation={3}>
-                    <h1>Create New Question</h1>
-                    <Divider/>
-                    <h2>Complete the question: </h2>
-                    <h3>Would you rather</h3>
-                    <form noValidate autoComplete="off">
-                        <TextField id="optionOne" label="Outlined" variant="outlined" />
-                        <br/>
-                        <h4>Or</h4>
-                        <br/>
-                        <TextField id="optionTwo" label="Outlined" variant="outlined" />
+            <Grid container justify='center' alignItems="center" spacing={3}>
+                    <Paper elevation={3} style={{padding:20}}>
+                        <h1>Create New Question</h1>
                         <Divider/>
-                        <Button variant="contained" >Submit</Button>
-                    </form>
-                </Paper>
-            </Container>
+                        <h2>Complete the question: </h2>
+                        <h3>Would you rather</h3>
+                        <form noValidate autoComplete="off">
+                            <TextField id="optionOne" label="Option 1" variant="outlined" />
+                            <h4>Or</h4>
+                            <TextField id="optionTwo" label="Option 2" variant="outlined" />
+                            <Divider/>
+                            <Button color='primary' variant="contained" >Submit</Button>
+                        </form>
+                    </Paper>
+               
+            </Grid>
         )
     }
 }
