@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -19,13 +19,17 @@ import HomeIcon from '@material-ui/icons/Home';
 import LeaderboardIcon from '@material-ui/icons/Equalizer';
 import NewQuestionIcon from '@material-ui/icons/PostAdd';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import { Avatar } from '@material-ui/core';
+import { Avatar} from '@material-ui/core';
 import {connect} from 'react-redux';
+import {BrowserRouter as Router, Route }  from 'react-router-dom';
+import LoadingBar from 'react-redux-loading';
+import {NavLink} from 'react-router-dom';
+import {signOut} from '../actions/authedUser'
 //Imported Components
-//import New from './New'
-import Question from './Question'
-import Score from './Score'
+import New from './New'
 import Home from './Home'
+import Leaderboard from './Leaderboard'
+import QuestionPage from './QuestionPage'
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -90,6 +94,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+
+
 function Dashboard(props) {
   const classes = useStyles();
   const theme = useTheme();
@@ -102,11 +108,17 @@ function Dashboard(props) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+  const logout=()=>{
+    props.dispatch(signOut())
+  }
   const {authedUser, users} = props
-  console.log(users[authedUser].avatarURL)
   return (
+    <Router>
+      <Fragment>
     <div className={classes.root}>
+    
       <CssBaseline />
+      
       <AppBar
         position="fixed"
         color="default"
@@ -114,6 +126,7 @@ function Dashboard(props) {
           [classes.appBarShift]: open,
         })}
       >
+        <LoadingBar/>
         <Toolbar>
           <IconButton
             color="inherit"
@@ -152,29 +165,35 @@ function Dashboard(props) {
         <Divider />
         <ListItem>
             <ListItemIcon>
-                <Avatar alt={authedUser} src="../images/tyler.png" /> 
+                  <Avatar src={require(`../images/${users[authedUser].avatarURL}`).default}/>
             </ListItemIcon>
-           
-           <ListItemText primary={authedUser}/>
+           <ListItemText primary={users[authedUser].name}/>
         </ListItem>
         
+
         
         <Divider />
         <List>
-          
+          <NavLink to='/' >
             <ListItem button>
               <ListItemIcon><HomeIcon/></ListItemIcon>
-              <ListItemText primary='Home' />
+              <ListItemText  primary='Home' />
             </ListItem>
-            <ListItem button>
+          </NavLink>
+            <NavLink to='/leaderboard'>
+              <ListItem button>
               <ListItemIcon><LeaderboardIcon/></ListItemIcon>
               <ListItemText primary='Leaderboard' />
             </ListItem>
-            <ListItem button>
+            </NavLink>
+            <NavLink to='/add' >
+              <ListItem button>
               <ListItemIcon><NewQuestionIcon/></ListItemIcon>
               <ListItemText primary='New Question' />
-            </ListItem>
-            <ListItem button>
+              </ListItem>
+            </NavLink>
+            
+            <ListItem button onClick={logout} >
               <ListItemIcon><ExitToAppIcon/></ListItemIcon>
               <ListItemText primary='Logout' />
             </ListItem>
@@ -182,15 +201,34 @@ function Dashboard(props) {
       </Drawer>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-        <Home/>
+        
+         
+            
+            {
+              props.loading === true?
+              null
+              :
+                <div>
+                  <Route path='/' exact component={Home} />
+                  <Route path='/questions/:question_id' component={QuestionPage}/>
+                  <Route path='/leaderboard' component={Leaderboard} />
+                  <Route path='/add' component={New}/>
+                </div>
+            }
+
+         
+        
       </main>
     </div>
+    </Fragment>
+    </Router>
   );
 }
-function mapPropsToState({authedUser, users}){
+function mapPropsToState({authedUser, users, loading}){
   return{
     authedUser,
-    users
+    users,
+    loading
   }
 }
 export default connect(mapPropsToState)(Dashboard)

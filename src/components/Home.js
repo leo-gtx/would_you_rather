@@ -6,6 +6,8 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
+import {connect} from 'react-redux';
+import Question from './Question';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -47,29 +49,44 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Home() {
+function Home(props) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
+  const {answeredQuestions, unansweredQuestions} = props 
   return (
     <div className={classes.root}>
       <AppBar position="static">
         <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-          <Tab label="Answered Questions" {...a11yProps(0)} />
-          <Tab label="Unanswared Questions" {...a11yProps(1)} />
+          <Tab label="Unanswered Questions" {...a11yProps(0)} />
+          <Tab label="Answared Questions" {...a11yProps(1)} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        Item One
+        {
+          unansweredQuestions.map((question)=>(
+            <Question key={question.id} questionId={question.id} />
+          ))
+        }
       </TabPanel>
       <TabPanel value={value} index={1}>
-        Item Two
+      {
+          answeredQuestions.map((question)=>(
+            <Question key={question.id} questionId={question.id} />
+          ))
+        }
       </TabPanel>
     
     </div>
   );
 }
+function mapStateToProps({questions, users, authedUser}){
+  return {
+    answeredQuestions: Object.values(questions).filter((question)=> users[authedUser].answers[question.id] ).sort((a,b)=> b.timestamp - a.timestamp ),
+    unansweredQuestions: Object.values(questions).filter((question)=> !users[authedUser].answers[question.id]).sort((a,b)=> b.timestamp - a.timestamp)
+  }
+}
+export default connect(mapStateToProps)(Home)

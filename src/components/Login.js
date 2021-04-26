@@ -14,11 +14,11 @@ class Login extends Component{
         const {users} = this.props
         return(
             <center>
-                <Grid justify='center' sm={6} >
+                <Grid item sm={6} >
                     <Paper>
-                        <Grid alignItems='center' item >
+                        <Grid item >
                             <center>
-                                <img src={logo}/>
+                                <img src={logo} alt='Logo' />
                             </center>
                         </Grid>
                         <Grid item>
@@ -31,6 +31,7 @@ class Login extends Component{
                                 variant='outlined'
                                 label='Select your player'
                                 >
+                                    <option>Select your player</option>
                                     {
                                         Object.values(users).map((user)=>
                                         <option key={user.id} value={user.id}>{user.name}</option>

@@ -12,7 +12,7 @@ export default function users(state = {}, action) {
                 ...state,
                 [action.question.author]: {
                     ...state[action.question.author],
-                    questions: users[action.question.author].questions.concat([action.question.id])
+                    questions: state[action.question.author].questions.concat([action.question.id])
                 }
             }
         case SET_USER_ANSWER:

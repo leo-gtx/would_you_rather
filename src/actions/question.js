@@ -23,12 +23,13 @@ function answerQuestion(answer){
     }
 }
 
-export function handleSetQuestion(question){
+export function handleSetQuestion(question, callback){
     return (dispatch)=>{
         API._saveQuestion(question)
         .then((question)=>{
             dispatch(setQuestion(question))
             dispatch(setUserQuestion(question))
+            callback()
         })
     }
 }
